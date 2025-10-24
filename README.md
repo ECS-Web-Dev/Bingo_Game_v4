@@ -1,4 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Bingo Game v.3.0
+
+This is an updated version of a bingo game I created for Cal State Fullerton's 2025 Coding Bootcamp. 
+
+This updated version has a more streamlined folder structure, is optimized for mobile devices, and has updated game logic. 
+Tips for new contributors can be found here: [Project Guide] 
+
+## Project Objective
+***Bingo Game v.3*** is created for use in conventions as an ice-breaker game. The project goal is to create a simple webpage that participants could load onto their phones and interact with during the duration of a weekend-long convention. Each box on the 5x5 grid contains 25 conversation starters or conversation takeaways that encourage players to network with other attendees. If a participant completed a prompt, they can tap on a box to mark it as complete. 5 complete squares in a row prompts the game to alert the participant that they have won the game and where to go to claim their prize. 
+
+The game persists after the participant wins Bingo in order to continue to inspire attendees to network throughout the event. 
+
+
+## Future Work
+These features will be added to v.4.0:
+1. Increase the size of the Win Popover for readability
+2. Adapt the front end design to the convention branding
+3. Move the in-code prompts and Box data model into a database. The db should then seed the Box components with the prompts.
+4. Add a schema to the Box Component and in the db to track the number of times a certain Box was clicked by different participants.
+5. Create a second page that displays the Box prompts in order of frequency (how often different participants click on a certain Box). This second page acts as a Leader Board that shows the popularity of prompts from highest to lowest. 
+
+
+## Tech Stack
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). I used the library, TailwindCSS, to subsidize component design.
 
 ## Getting Started
 

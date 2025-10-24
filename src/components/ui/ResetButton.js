@@ -1,3 +1,4 @@
+//not currently used. Keeping for potential future use. A button that resets the game board, but does not interfere with Win Proof state.
 "use client";
 import { useState, useRef } from "react";
 
