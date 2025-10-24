@@ -3,11 +3,13 @@
 function Rules() {
   return (
     <main>
-      <h2 className ="m-0 py-5 text-center">Bingo Game Rules</h2>
-      <ul>
-        <li className="text-center">Each player gets a unique bingo card with a 5x5 grid of prompts.</li>
-        <li className="text-center">Players mark a box when they complete the prompt in real life.</li>
-        <li className="text-center">After winning, players can reset their cards to play again.</li>
+      <h3 className ="m-0 py-5 text-center">Game Rules</h3>
+      <ul className="mx-auto w-full max-w-xl list-disc pl-6 space-y-3">
+        <li>Each bingo square contains a conversation idea or action to help break the ice with professionals and peers!</li>
+        <li>Use the prompts to create connections with other attendees.</li>
+        <li>Tap each square if you complete the prompt. Complete five squares across to win Bingo!</li>
+        <li>Bring your device to prove you won to the entry table to collect your prize.</li>
+        <li>You can continue playing after you win; just reset the board and use the prompts to create a connection with someone new.</li>
       </ul>
     </main>
   );
