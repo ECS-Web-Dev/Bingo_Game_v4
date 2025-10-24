@@ -1,15 +1,36 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Box from '@/components/Box';
 import { checkWin } from '@/utils/checkWin';
 
-// Sample texts you’ll later fetch from the DB
+
+// Sample to fetch from the DB
 const SAMPLE_TEXTS = [
-  "Read a poem","Finish a chapter","Take notes","Summarize a scene","Define 3 words",
-  "Explain a theme","Spot symbolism","Quote a line","Character sketch","Map a timeline",
-  "Predict ending","Identify genre","Do a dance","Paraphrase paragraph","Find conflict",
-  "List motifs","New author","Discuss setting","Write question","Compare characters",
-  "Find foreshadow","Outline plot","Favorite passage","Hardest part","Teach a friend"
+  "Asked a question during a panel or session",
+  "Corrected a mistake while doing a major based project",
+  "Asked a professional how they prepared for their career",
+  "Found a professional who is an alumni CSUF",
+  "Met someone with a different major",
+  "Find someone graduating or an alumni",
+  "Follow someone new on LinkedIn",
+  "Met someone who has/had an internship",
+  "Follow @CSUFECS SUMMIT on Instagram",
+  "Cried about an exam",
+  "Discover a shared hobby outside of school",
+  "Find someone who did an all nighter for a test/project",
+  "Free Space",
+  "Talked about a personal project based on their studies",
+  "Met someone who has attended a prior summit",
+  "Met a professional who was involved in student club/org as a student",
+  "Follow @SHPE_CSUF on Isntagram",
+  "Found someone with the same major as you",
+  "Discussed the importance of soft skills in CS or Engineering",
+  "Learned about an internship opportunity",
+  "Find a mentor or gave mentorship advice",
+  "Met someone with their same career interests as you",
+  "Took a group photo with new connections",
+  "Asked a professional about their career journey",
+  "Met professional, student, or intern working in your major"
 ];
 
 function makeBoxes(size = 5, texts = SAMPLE_TEXTS) {
@@ -21,10 +42,10 @@ function makeBoxes(size = 5, texts = SAMPLE_TEXTS) {
       const text = texts[i] ?? `Prompt ${i + 1}`;
       boxes.push({
         n, //1..25 position used by checkWin
-        boxId: `r${r + 1}c${c + 1}`,  // stable ID → great DB key later
-        text,                          // the prompt text
-        checked: false, // always start unchecked
-        row: r + 1,                    // optional: explicit position
+        boxId: `r${r + 1}c${c + 1}`,    // stable ID 
+        text,                           // the prompt text
+        checked: false,                 // always start unchecked
+        row: r + 1,                     // optional: explicit position
         col: c + 1,
       });
       n++;
@@ -33,16 +54,16 @@ function makeBoxes(size = 5, texts = SAMPLE_TEXTS) {
   return boxes;
 }
 
-export default function Card() {
+export default function Card({ onFirstWin, disablePopover = false }) {
   const size = 5;
-  // Generate once per mount so we’re not rebuilding on every re-render
   const [boxes, setBoxes] = useState(() => makeBoxes(size));
   const [winner, setWinner] = useState(false);
+  // Popover state
   const [showPopover, setShowPopover] = useState(false);
+  const hasShownPopoverRef = useRef(false);
 
-  // NEW: persists for the session even if card is reset
-  const [hasEverWon, setHasEverWon] = useState(false);
-  const [showWinProof, setShowWinProof] = useState(false);
+  // Track if we already notified parent about the first win
+  const notifiedFirstWinRef = useRef(false);
 
   function onToggle(boxId) {
     setBoxes(prev =>
@@ -55,10 +76,21 @@ export default function Card() {
     const doneArr = boxes.filter(b => b.checked).map(b => b.n);
     const won = checkWin(doneArr);
     setWinner(won);
-    setShowPopover(won); // show popover when a win happens
 
-    if (won) setHasEverWon(true);  // <-- flip once; do NOT clear on reset
-  }, [boxes]);
+    if (won) {
+      // 1) Let parent know about the first-ever win (only once)
+      if (!notifiedFirstWinRef.current) {
+        onFirstWin?.();
+        notifiedFirstWinRef.current = true;
+      }
+
+      // 2) Show Card’s popover only once AND only if parent hasn't disabled it
+      if (!hasShownPopoverRef.current && !disablePopover) {
+        setShowPopover(true);
+        hasShownPopoverRef.current = true;
+      }
+    }
+  }, [boxes, onFirstWin, disablePopover]);
 
   return (
     <div className="mx-auto max-w-[min(92vw,720px)]">
@@ -83,7 +115,7 @@ export default function Card() {
         </div>
       </div>
 
-      {/* ⬇️ Place the popover right here, as a sibling to the grid */}
+      {/* Popover: appears only on the FIRST win, never again, and never after Win Proof is shown */}
       {showPopover && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-xl px-6 py-4 text-center">
@@ -102,7 +134,7 @@ export default function Card() {
                   setBoxes(prev => prev.map(b => ({ ...b, checked: false })));
                   setShowPopover(false);
                   setWinner(false);
-                  // NOTE: hasEverWon stays true
+                  // NOTE: hasEverWon and hasShownPopover stays true
                 }}
               >
                 Reset Card
@@ -112,25 +144,7 @@ export default function Card() {
         </div>
       )}
 
-      {/* Win Proof Section */}
-      {hasEverWon && (
-        <div className="fixed bottom-4 left-0 right-0 flex justify-center z-40">
-          <div className="flex flex-col items-center gap-2">
-            <button
-              className="px-4 py-2 rounded bg-emerald-600 text-white shadow"
-              onClick={() => setShowWinProof(true)}
-            >
-              Show Win Proof
-            </button>
 
-            {showWinProof && (
-              <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
-                Verified: this user has won at least once.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
