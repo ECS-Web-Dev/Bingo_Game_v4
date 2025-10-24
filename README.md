@@ -3,7 +3,7 @@
 This is an updated version of a bingo game I created for Cal State Fullerton's 2025 Coding Bootcamp. 
 
 This updated version has a more streamlined folder structure, is optimized for mobile devices, and has updated game logic. 
-Tips for new contributors can be found here: [Project Guide] 
+Tips for new contributors can be found here: [Project Guide](https://github.com/eliO160/BingoGame_v3/blob/main/PROJECT_GUIDE.md)
 
 ## Project Objective
 ***Bingo Game v.3*** is created for use in conventions as an ice-breaker game. The project goal is to create a simple webpage that participants could load onto their phones and interact with during the duration of a weekend-long convention. Each box on the 5x5 grid contains 25 conversation starters or conversation takeaways that encourage players to network with other attendees. If a participant completed a prompt, they can tap on a box to mark it as complete. 5 complete squares in a row prompts the game to alert the participant that they have won the game and where to go to claim their prize. 
