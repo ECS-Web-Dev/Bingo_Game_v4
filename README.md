@@ -3,7 +3,7 @@
 This is an updated version of a bingo game I created for Cal State Fullerton's 2025 Coding Bootcamp. 
 
 This updated version has a more streamlined folder structure, is optimized for mobile devices, and has updated game logic. 
-Tips for new contributors can be found here: [Project Guide](https://github.com/eliO160/BingoGame_v3/blob/main/PROJECT_GUIDE.md)
+Tips for new contributors can be found here: [Project Guide](https://github.com/ECS-Web-Dev/Bingo_Game_v4/blob/main/PROJECT_GUIDE.md)
 
 ## Project Objective
 ***Bingo Game v.3*** is created for use in conventions as an ice-breaker game. The project goal is to create a simple webpage that participants could load onto their phones and interact with during the duration of a weekend-long convention. Each box on the 5x5 grid contains 25 conversation starters or conversation takeaways that encourage players to network with other attendees. If a participant completed a prompt, they can tap on a box to mark it as complete. 5 complete squares in a row prompts the game to alert the participant that they have won the game and where to go to claim their prize. 
@@ -24,8 +24,23 @@ These features will be added to v.4.0:
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). I used the library, TailwindCSS, to subsidize component design.
 
 ## Getting Started
+First, clone the repo. Github provides tips for cloning a repository [here](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
-First, run the development server:
+After you first clone the repo, open a Terminal and install the dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+
+This only needs to be done when you first clone the project and when new dependencies are added to the main branch. 
+
+Then, run the development server:
 
 ```bash
 npm run dev
