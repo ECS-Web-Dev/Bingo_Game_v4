@@ -8,7 +8,7 @@ export default function Box({ boxId, text, checked, onToggle }) {
       onClick={() => onToggle(boxId)}
       className={`relative w-full h-full flex items-center justify-center text-center
                   p-2 sm:p-3 md:p-4 select-none transition-colors
-                  ${checked ? "bg-green-500 text-white" : "bg-white text-gray-900"}`}
+                  ${checked ? "bg-amber-200 text-black" : "bg-stone-300 text-gray-900"}`}
     >
       {checked && (
         <Check 

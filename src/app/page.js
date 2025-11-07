@@ -6,6 +6,11 @@ import Rules from '@/components/Rules';
 import WinButton from "@/components/ui/WinButton";
 
 
+import { Geist } from 'next/font/google'; // I added this
+
+const geist = Geist({ subsets: ['latin'] }); // I added this
+
+
 function HomePage() {
   const [hasEverWon, setHasEverWon] = useState(false);
   const [showWinProof, setShowWinProof] = useState(false); // controls WinButton popover
