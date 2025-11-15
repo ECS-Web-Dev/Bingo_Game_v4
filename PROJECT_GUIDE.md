@@ -1,5 +1,18 @@
 # For new contributors...
 
+## Developer Workflow
+
+git pull → update your local version of main
+
+git checkout -b feature/AmazingFeature → create a feature branch, make sure you branch off main
+
+git commit -m 'Add some AmazingFeature' → commit your changes
+
+git push origin feature/AmazingFeature → push to the branch
+
+Open a pull request on GitHub
+
+
 ## File Overview
 /public : add static assets served at the root here, like images
 /src : add source code files here
