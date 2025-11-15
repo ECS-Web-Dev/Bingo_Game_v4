@@ -3,37 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import Box from '@/components/Box';
 import { checkWin } from '@/utils/checkWin';
 
-
-// Sample to fetch from the DB
-const SAMPLE_TEXTS = [
-  "Asked a question during a panel or session",
-  "Corrected a mistake while doing a major based project",
-  "Asked a professional how they prepared for their career",
-  "Found a professional who is an alumni CSUF",
-  "Met someone with a different major",
-  "Find someone graduating or an alumni",
-  "Follow someone new on LinkedIn",
-  "Met someone who has/had an internship",
-  "Follow @CSUFECS SUMMIT on Instagram",
-  "Cried about an exam",
-  "Discover a shared hobby outside of school",
-  "Find someone who did an all nighter for a test/project",
-  "Free Space",
-  "Talked about a personal project based on their studies",
-  "Met someone who has attended a prior summit",
-  "Met a professional who was involved in student club/org as a student",
-  "Follow @SHPE_CSUF on Isntagram",
-  "Found someone with the same major as you",
-  "Discussed the importance of soft skills in CS or Engineering",
-  "Learned about an internship opportunity",
-  "Find a mentor or gave mentorship advice",
-  "Met someone with their same career interests as you",
-  "Took a group photo with new connections",
-  "Asked a professional about their career journey",
-  "Met professional, student, or intern working in your major"
-];
-
-function makeBoxes(size = 5, texts = SAMPLE_TEXTS) {
+function makeBoxes(size = 5, texts = []) {
   const boxes = [];
   let n = 1;
   for (let r = 0; r < size; r++) {
@@ -54,7 +24,8 @@ function makeBoxes(size = 5, texts = SAMPLE_TEXTS) {
   return boxes;
 }
 
-export default function Card({ onFirstWin, disablePopover = false }) {
+// Change "day1" -> "day2" to load the different day's prompts
+export default function Card({ onFirstWin, disablePopover = false, day = "day1" }) {
   const size = 5;
   const [boxes, setBoxes] = useState(() => makeBoxes(size));
   const [winner, setWinner] = useState(false);
@@ -64,6 +35,20 @@ export default function Card({ onFirstWin, disablePopover = false }) {
 
   // Track if we already notified parent about the first win
   const notifiedFirstWinRef = useRef(false);
+
+  // Fetch Prompts.json 
+  useEffect(() => {
+    fetch("/prompts.json")
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        const prompts = data[day] || [];
+        setBoxes(makeBoxes(size, prompts));
+      })
+      .catch(err => console.error("Error fetching prompts:", err));
+  }, [day]);
 
   function onToggle(boxId) {
     setBoxes(prev =>
