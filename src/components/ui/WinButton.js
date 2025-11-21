@@ -17,9 +17,9 @@ export default function WinButton({
   }
 
   return (
-    <div className="relative flex justify-center my-4">
+    <div className="py-3 relative flex justify-center my-4">
       <button
-        className="px-4 py-2 rounded bg-emerald-600 text-white shadow"
+        className="px-4 py-2 rounded bg-green-700 text-white shadow"
         onClick={() => setOpen(true)}
       >
         {buttonText}
