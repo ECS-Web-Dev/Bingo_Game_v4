@@ -2,7 +2,7 @@
 
 function Rules() {
   return (
-    <main>
+    <main className="pb-10">
       <h3 className ="m-0 py-5 text-center font-bold text-2xl underline">Game Rules</h3>
       <ul className="mx-auto w-full max-w-xl list-disc pl-6 space-y-5">
         <li>Each bingo square contains a conversation idea or action to help break the ice with professionals and peers!</li>
