@@ -1,7 +1,9 @@
 // src/utils/redis.js
 import { createClient } from "redis";
 
-const redis = createClient();
+const redis = createClient({
+  url: process.env.UPSTASH_REDIS_URL,
+});
 
 redis.on("error", (err) => {
   console.error("Redis Client Error", err);
@@ -14,4 +16,3 @@ if (!redis.isOpen) {
 }
 
 export default redis;
-
