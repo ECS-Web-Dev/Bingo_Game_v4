@@ -12,7 +12,7 @@ function makeBoxes(size = 5, texts = []) {
       const text = texts[i] ?? `Prompt ${i + 1}`;
       boxes.push({
         n, //1..25 position used by checkWin
-        boxId: `r${r + 1}c${c + 1}`,    // stable ID 
+        boxId: `r${r + 1}c${c + 1}`,    // stable ID
         text,                           // the prompt text
         checked: false,                 // always start unchecked
         row: r + 1,                     // optional: explicit position
@@ -36,7 +36,20 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
   // Track if we already notified parent about the first win
   const notifiedFirstWinRef = useRef(false);
 
-  // Fetch Prompts.json 
+  // 🔹 NEW: log a click for a given promptId to Redis
+  async function recordPromptClick(promptId) {
+    try {
+      await fetch("/api/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promptId }),
+      });
+    } catch (err) {
+      console.error("Failed to record click:", err);
+    }
+  }
+
+  // Fetch prompts.json
   useEffect(() => {
     fetch("/prompts.json")
       .then(response => {
@@ -51,6 +64,11 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
   }, [day]);
 
   function onToggle(boxId) {
+    // 🔹 Log this tile click for the given day
+    const promptId = `${day}:${boxId}`;
+    recordPromptClick(promptId);
+
+    // Existing toggle logic
     setBoxes(prev =>
       prev.map(b => (b.boxId === boxId ? { ...b, checked: !b.checked } : b))
     );
@@ -87,7 +105,7 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
             <div
               key={b.boxId}
               style={{ gridRowStart: b.row, gridColumnStart: b.col }}
-              className="bg-white aspect-square"  
+              className="bg-white aspect-square"
             >
               <Box
                 boxId={b.boxId}
@@ -105,7 +123,9 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-xl px-6 py-4 text-center">
             <h2 className="text-2xl font-semibold mb-2">Bingo 🎉</h2>
-            <h2 className="text-xl font-semibold mb-2">Proceed to the table outside the entrance to claim your prize!</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              Proceed to the table outside the entrance to claim your prize!
+            </h2>
             <div className="mt-3 flex gap-2 justify-center">
               <button
                 className="px-4 py-2 rounded bg-blue-600 text-white"
@@ -128,8 +148,7 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
+

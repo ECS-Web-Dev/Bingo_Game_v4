@@ -1,15 +1,14 @@
-# Bingo Game v.3.0
+# Bingo Game v.4.0
 
-This is an updated version of a bingo game I created for Cal State Fullerton's 2025 Coding Bootcamp. 
-
-This updated version has a more streamlined folder structure, is optimized for mobile devices, and has updated game logic. 
-Tips for new contributors can be found here: [Project Guide](https://github.com/ECS-Web-Dev/Bingo_Game_v4/blob/main/PROJECT_GUIDE.md)
 
 ## Project Objective
-***Bingo Game v.3*** is created for use in conventions as an ice-breaker game. The project goal is to create a simple webpage that participants could load onto their phones and interact with during the duration of a weekend-long convention. Each box on the 5x5 grid contains 25 conversation starters or conversation takeaways that encourage players to network with other attendees. If a participant completed a prompt, they can tap on a box to mark it as complete. 5 complete squares in a row prompts the game to alert the participant that they have won the game and where to go to claim their prize. 
+This project was created by the CSUF ECS Diversity and Inclusion Council WebDev team for use in conventions as an ice-breaker game. The project goal is to create a simple webpage that participants could load onto their phones and interact with during the duration of a weekend-long convention. Each box on the 5x5 grid contains 25 conversation starters or conversation takeaways that encourage players to network with other attendees. If a participant completed a prompt, they can tap on a box to mark it as complete. 5 complete squares in a row prompts the game to alert the participant that they have won the game and where to go to claim their prize. 
 
 The game persists after the participant wins Bingo in order to continue to inspire attendees to network throughout the event. 
 
+Tips for new contributors can be found here: [Project Guide](https://github.com/ECS-Web-Dev/Bingo_Game_v4/blob/main/PROJECT_GUIDE.md)
+
+Testing Plan can be found here: [Test Plan](https://github.com/ECS-Web-Dev/Bingo_Game_v4/blob/main/TEST_PLAN.md) 
 
 ## Future Work
 These features will be added to v.4.0:
