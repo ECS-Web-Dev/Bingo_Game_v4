@@ -38,9 +38,7 @@ export async function GET() {
     const promptLookup = buildPromptLookup(promptsData);
 
     // 2) Get top N from Redis with scores
-    const raw = await redis.zRangeWithScores(LEADERBOARD_KEY, 0, 9, {
-      REV: true,
-    });
+    const raw = await redis.zRangeWithScores(LEADERBOARD_KEY, 0, 9);
 
     // raw = [ { value: "day1:r3c4", score: 2 }, ... ]
     const leaderboard = raw.map(({ value, score }) => ({
