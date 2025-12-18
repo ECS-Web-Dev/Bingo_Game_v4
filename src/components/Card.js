@@ -85,6 +85,9 @@ export default function Card({ onFirstWin, disablePopover = false }) {
 
   // Log a click for a given promptId to Redis
   async function recordPromptClick(promptId) {
+    // Ignore Free Space (center tile r3c3 for both days) --> will not be recorded on redis
+    if (promptId.endsWith(':r3c3')) return;
+
     try {
       await fetch('/api/click', {
         method: 'POST',

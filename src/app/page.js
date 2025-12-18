@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Rules from '@/components/Rules';
 import WinButton from "@/components/ui/WinButton";
+import LeaderboardButton from '@/components/ui/LeaderboardButton';
 
 import { Geist } from 'next/font/google';
 
@@ -20,6 +21,8 @@ function HomePage() {
         onFirstWin={() => setHasEverWon(true)}
         disablePopover={showWinProof}
       />
+
+      <LeaderboardButton />
 
       {hasEverWon && (
         <WinButton

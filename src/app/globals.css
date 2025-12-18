@@ -21,4 +21,19 @@ body {
   .heading-sub {
     @apply m-0 py-2 text-center text-3xl text-orange-600 font-bold;
   }
+  
+  .btn {
+    @apply px-4 py-2 rounded shadow font-semibold inline-flex items-center justify-center
+           transition-transform transition-colors duration-150 active:scale-95;
+  }
+
+  .btn-emerald {
+    @apply bg-emerald-600 text-white 
+           hover:bg-emerald-700 
+           focus-visible:outline-none 
+           focus-visible:ring-2 
+           focus-visible:ring-emerald-500 
+           focus-visible:ring-offset-2 
+           focus-visible:ring-offset-transparent;
+  }
 }

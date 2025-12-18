@@ -8,41 +8,91 @@ export default function LeaderboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [day, setDay] = useState('day1');              // active day
+  const [dayLoading, setDayLoading] = useState(true);  // loading /api/day
+
+  //Fetch current active day from /api/day
   useEffect(() => {
+    let cancelled = false;
+
+    async function fetchDay() {
+      try {
+        const res = await fetch('/api/day', { cache: 'no-store' });
+        if (!res.ok) {
+          throw new Error(`Failed to fetch day: ${res.status}`);
+        }
+        const data = await res.json();
+        if (!cancelled && (data.day === 'day1' || data.day === 'day2')) {
+          setDay(data.day);
+        }
+      } catch (err) {
+        console.error('Error fetching current day for leaderboard:', err);
+        // If this fails, we just stick with the default "day1"
+      } finally {
+        if (!cancelled) {
+          setDayLoading(false);
+        }
+      }
+    }
+    fetchDay();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  //Fetch leaderboard rows from current day
+  useEffect(() => {
+    // resolve data first, then load leaderboard
+    if (dayLoading) return;
+    let cancelled = false;
+
     async function loadLeaderboard() {
       try {
-        const res = await fetch('/api/leaderboard');
+        setLoading(true);
+        setError(null);
+        
+        const res = await fetch(`/api/leaderboard?day=${day}`);
+        
         if (!res.ok) {
           throw new Error(`Failed to fetch: ${res.status}`);
         }
+
         const data = await res.json();
-        setRows(data.leaderboard || []);
+        if(!cancelled)
+          setRows(data.leaderboard || []);
       } catch (err) {
         console.error('Error loading leaderboard:', err);
-        setError(err.message || 'Unknown error');
+        if(!cancelled)
+          setError(err.message || 'Unknown error');
       } finally {
-        setLoading(false);
+        if(!cancelled)
+          setLoading(false);
       }
     }
 
     loadLeaderboard();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [day, dayLoading]);
 
   // max clicks for bar width calculation
   const maxClicks =
     rows.length > 0 ? Math.max(...rows.map((r) => r.clicks)) : 0;
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen">
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="heading-sub">
               Bingo Leaderboard
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Most-clicked prompts across all players.
+            <p className="text-md text-orange-600 mt-1">
+              {dayLoading
+                ? 'Loading current day…'
+                : `Most-clicked prompts for ${day === 'day1' ? 'Day 1' : 'Day 2'}`}
             </p>
           </div>
           <Link
