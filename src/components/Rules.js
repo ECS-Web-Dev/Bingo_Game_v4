@@ -11,7 +11,7 @@ function Rules() {
         <li>Use the prompts as inspiration for networking with professionals and peers.</li>
         <li>When you complete a prompt, mark it as complete by clicking to tapping the square.</li>
         <li>If a prompt is cut off, <strong>Press and hold</strong> any square to view the
-          complete text in a popup. Click anywhere to dismiss it</li>
+          complete text in a popup. Click anywhere to dismiss it.</li>
         <li> When you get Bingo, show your device at the entry table to claim your prize.</li>
         <li>Want to keep going? You can reset the board and challenge yourself to meet even more people.</li>
       </ul>

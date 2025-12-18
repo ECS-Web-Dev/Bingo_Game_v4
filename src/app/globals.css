@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Global theme styles */
 :root {
   --background: linear-gradient(to bottom, #1168b9, #ceba8e); 
   --foreground: #171717;
@@ -9,4 +10,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Reusable heading styles */
+@layer components {
+  .heading-main {
+    @apply mt-8 py-2 text-center text-4xl text-orange-600 font-bold;
+  }
+
+  .heading-sub {
+    @apply m-0 py-2 text-center text-3xl text-orange-600 font-bold;
+  }
 }
