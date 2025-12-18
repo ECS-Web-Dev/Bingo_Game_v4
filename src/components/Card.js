@@ -133,25 +133,23 @@ export default function Card({ onFirstWin, disablePopover = false }) {
   return (
     <div className="mx-auto max-w-[min(92vw,720px)]">
       <div className="mt-2 mb-2 px-2 sm:px-4">
-        <h2 className="heading-sub">
+        {/* <h2 className="heading-sub">
           {loadingDay
             ? 'Loading day...'
             : day === 'day1'
             ? 'Day 1'
             : 'Day 2'}
-        </h2>
+        </h2> */}
       </div>
-
-
 
       {/* Grid */}
       <div className="pl-2 sm:pl-4">
-        <div className="grid grid-cols-5 grid-rows-5 gap-px bg-gray-300 p-px rounded">
+        <div className="grid grid-cols-5 grid-rows-5 gap-px bg-gray-400 p-px rounded">
           {boxes.map(b => (
             <div
               key={b.boxId}
               style={{ gridRowStart: b.row, gridColumnStart: b.col }}
-              className="bg-white aspect-square"
+              className="aspect-square"
             >
               <Box
                 boxId={b.boxId}
@@ -164,7 +162,7 @@ export default function Card({ onFirstWin, disablePopover = false }) {
         </div>
       </div>
 
-      {/* Popover: appears only on the FIRST win, never again, and never after Win Proof is shown */}
+      {/* Popover: appears only on the FIRST win. Does not disappear after Reset Card button.  */}
       {showPopover && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-xl px-6 py-4 text-center">

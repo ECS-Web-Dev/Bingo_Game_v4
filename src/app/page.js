@@ -29,7 +29,7 @@ function HomePage() {
           open={showWinProof}
           onOpenChange={setShowWinProof}
           buttonText="Winner!"
-          proofTExt={"I've won Bingo!"}
+          proofText={"I've won Bingo!"}
         />
       )}
 
