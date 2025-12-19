@@ -44,27 +44,32 @@ export async function GET(request) {
     const filePath = path.join(process.cwd(), "public", "prompts.json");
     const fileContents = fs.readFileSync(filePath, "utf-8");
     const promptsData = JSON.parse(fileContents);
-
+  
+    // Create a lookup for prompt texts
     const promptLookup = buildPromptLookupForDay(promptsData, day);
 
-    // 3) Get all entries from Redis with scores
+    // 3) Get all entries from Redis first
     const raw = await redis.zRangeWithScores(LEADERBOARD_KEY, 0, -1);
     // raw = [ { value: "day1:r3c4", score: 2 }, ... ]
 
-    const filteredForDay = raw
-      .filter(
-        ({ value }) =>
-          typeof value === "string" && 
-          value.startsWith(`${day}:`) && 
-          !value.endsWith(":r3c3") // exclude Free Space
-      )
-      .sort((a, b) => b.score - a.score)
+    // New -- convert redis array to a map 
+    const scoreMap = {};
+    raw.forEach(({ value, score }) => {
+      scoreMap[value] = score;
+    });
 
-    const leaderboard = filteredForDay.map(({ value, score }) => ({
-      promptId: value,
-      promptText: promptLookup[value] ?? null,
-      clicks: score,
-    }));
+    // 4) CHANGE: Map over the promptLookup keys (the 24/25 boxes)
+    // instead of mapping over the Redis results.
+    const leaderboard = Object.keys(promptLookup)
+      .filter(promptId => !promptId.endsWith(":r3c3")) // Exclude Free Space
+      .map((promptId) => ({
+        promptId: promptId,
+        promptText: promptLookup[promptId],
+        // Default to 0 if the ID isn't in Redis
+        clicks: scoreMap[promptId] || 0, 
+      }))
+      // Sort by clicks descending
+      .sort((a, b) => b.clicks - a.clicks);
 
     return NextResponse.json({ leaderboard, day });
   } catch (err) {
