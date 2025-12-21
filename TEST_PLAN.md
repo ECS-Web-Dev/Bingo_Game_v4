@@ -1,92 +1,111 @@
 # Testing Plan
-GOAL: Test the critical parts of the app:
+
+**Code Review -> Pre-Deployment Tasks:**
+
+1. Switch Redis Client to Upstash HTTP Client:
+    - Vercel runs code in short-lived serverless functions. Persistent Redis connections can cause instability under load. The HTTP client is safer and simpler for serverless apps.
+
+    - What to do
+      - Replace the current Redis client with the Upstash HTTP-based Redis client.
+      - Remove manual connection handling (connect, isOpen, etc.).
+    - Definition of Done
+      - App can read/write Redis using the HTTP client
+      - Click tracking still works as before
+      - No Redis connection errors in logs
+
+2. Count a Click Only the First Time a Tile Is Checked
+    - Clicks are counted every toggle, not “first check only.” This would allow users to continue to log clicks after first initial win. Potentially, this would make the leaderboard not reflect what people actually did, just what they clicked multple times.
+    - Update this to only count the first time checked? 
+    - Decrement if unchecked?
+  
+3. Reduce Logging Noise (Log Once per Minute)
+    - The Admin route.js logs info on every request. Update to run at most once per minute. 
+    - Check other console.logs that might cause potential noise during event. 
+  
+4. Add Redis Key Namespacing (Day + Environment)
+    - The current Redis key is 'prompt-clicks'. All clicks are stored under that one key. 
+    - Update Redis keys to include: 
+      - environment (test or prod)
+      - day1 or day2
+      - Ex: bingo:{env}:{day}:prompt-clicks
+        - bingo:test:day1:prompt-clicks
+        - bingo:test:day2:prompt-clicks
+        - bingo:prod:day1:prompt-clicks
+        - bingo:prod:day2:prompt-clicks
+    - Definition of Done:
+      - Test and production data are separated
+      - Day 1 and Day 2 data are stored independently
+      - Leaderboard still displays correctly
+
+##  Operational Readiness Checklist
+  
+ **GOAL: Ensure critical parts of the app work day of convention**
+
+Test 1: Concurrency Test
+  - 200+ concurrent POSTs to /api/click
+  - All hitting the same prompt
+
+  - Pass condition:
+    - Redis count increases by exactly the number of requests
+    - No crashes
+    - No Redis errors
+
+  - Tools: k6 OR Artillery
+      - Run it once against:
+        - Vercel preview
+        - Vercel production
+
+Test 2: Day Switch Rehearsal
+- Steps:
+  - Deploy production
+  - Set event start to tomorrow
+  - Verify:
+    - Shows Day 1
+    - Rolls to Day 2 automatically
+  - Override via admin to Day 1
+  - Remove override
+
+- Pass condition:
+  - no caching issues
+  - correct day every time 
+
+Test 3: User testing
+  - Tasks for testers (would work with just 2-3 people):
+    - Open on different mobile devices
+    - Tap same square repeatedly
+    - Refresh leaderboard
+
+
+
+## Feature List and Acceptance Criteria
 - UI: Readable on different screens, Interactions are working
 - Cross browser testing: making sure it works across different browsers
 - Nextjs/Redis: Performance speed, Caching
 - Redis: If days are changing
 - Source Code: Game logic is working, Wins are being logged
-- Acceptance criteria (see below)
+- Basic acceptance criteria (see below):
+
+  - Feature 1: Interactive Bingo Grid
+    -  “Grid renders & toggles on mobile”
 
 
-Frameworks for automated testing (https://nextjs.org/docs/app/guides/testing):
-- Vitest + React Testing Library: unit tests
-  - Logic
-  - Redis
-- Playwright: automate browser tests (end-to-end testing)
-  - Cross-browser tests
-  - Raw HTTP assertions
-  - Vercel Preview
+  - Feature 2: Bingo Win Popup
+    - “Win triggers accessible modal”
+    -  “Correct win detection logic”
 
-## Feature List + Tests:
-Project schedule allows about 1-2 tests per feature:
-- Feature 1: Interactive Bingo Grid
-  - Playwright (E2E) — “Grid renders & toggles on mobile”
-    - Setup: page.setViewportSize({ width: 390, height: 844 })
-    - Steps: Visit /; assert getByTestId('grid') has 25 getByTestId('cell').
-    - Click first cell; expect it to have data-checked="true" and visible checkmark.
-    - Asserts: Count = 25; cell toggled; page has no horizontal scrollbar (CSS document.scrollingElement.scrollWidth === clientWidth).
+  - Feature 3: Winner Verification
+    -  “First win persists + page feed updates”
+    - “Resets at midnight”
 
+  - Feature 4: Prompt Library
+    - “Schema valid + fallback works”
+    - “/prompts page renders and reflects edit”
 
-  - Vitest (unit) — “win detection logic”
-    - Target: detectWin(boardState) pure function.
-    - Steps: Feed a board with a completed diagonal; expect true. Feed near-miss; expect false.
-    - Add hooks: data-testid="grid", data-testid="cell", data-checked="true|false".
+  - Feature 5: Prompt Leaderboard
+    - “Descending order”
+    - “Leaderboard renders & empty state”
 
-
-- Feature 2: Bingo Win Popup
-  - Playwright (E2E) — “Win triggers accessible modal”
-    - Steps: Programmatically check 5-in-a-row (click 5 cells).
-    - Asserts: getByRole('dialog', { name: /bingo!/i }) visible; text contains both instruction lines.
-    - Esc closes it or click close button; focus returns to the last clicked cell (focus trap + return).
-
-
-  - Vitest (unit) — “detects all three directions”
-    - Steps: Call detectWin with a horizontal, a vertical, and a diagonal winning board.
-    - Asserts: All true.
-    - Hook: modal has role="dialog" and heading Bingo! You’ve won!.
-
-- Feature 3: Winner Verification
-  - Vitest (integration, Redis mocked or real) — “first win persists + page feed updates”
-    - Steps: Call logWin({ userId, board }); then getWinsToday() returns array with that entry.
-    - Asserts: Entry includes userId, board mask, timestamp.
-
-
-  - Vitest (unit with fake timers) — “resets at midnight”
-    - Steps: vi.setSystemTime('2025-11-14T23:59:30Z'); logWin. Advance to 2025-11-15T00:01:00Z; getWinsToday() → empty.
-    - Note: Use date-scoped keys like wins:YYYY-MM-DD or TTL expiring at midnight.
-
-
-- Feature 4: Prompt Library
-  - Vitest (unit) — “schema valid + fallback works”
-    - Steps: Validate prompts.json with Zod schema {id,text,category?,active}; ensure no duplicate ids.
-    - Simulate DB 500 → loader falls back to /public/prompts.json.
-    - Asserts: Parse OK; duplicates throw; fallback returns list.
-
-
-  - Playwright (E2E) — “/prompts page renders and reflects edit”
-    - Steps: Visit /prompts; count ≥ 1. Perform admin edit via UI or hit admin API (fixture); reload page.
-    - Asserts: Edited prompt text appears within 60s or on refresh.
-    - Hooks: list root data-testid="prompt-list", each item data-testid="prompt-item".
-
-- Feature 5: Prompt Leaderboard
-  - Vitest (integration, Redis) — “descending order”
-    - Steps: incrementPrompt('pA') once; incrementPrompt('pB') twice; fetch top.
-    - Asserts: pB first with count 2, then pA with 1.
-
-
-  - Playwright (E2E) — “Leaderboard renders & empty state”
-    - Steps: Visit /leaderboard with clean store.
-    - Asserts: Shows “No data yet”.
-    - (Optional second step: simulate a couple of increments via API; reload → entries show text + counts.)
-    - Hooks: table data-testid="leaderboard", row data-testid="leaderboard-row", empty state data-testid="empty-leaderboard".
-
-- Feature 6: Accessible Design
-  - Playwright + axe — “Zero critical a11y violations on home”
-    - Steps: Run @axe-core/playwright on /.
-    - Asserts: violations.length === 0 for critical/serious (or fail on any).
-
-
-  - Playwright (responsive keyboard nav) — “keyboard reachable & responsive”
-    - Steps: Desktop viewport; Tab through grid: focus outline visible on cells; hitting Space toggles a cell.
-    - Switch to mobile viewport (e.g., 390×844); ensure prompts readable and no clipping (check element bounding boxes within viewport).
+  - Feature 6: Accessible Design
+    - “Zero critical a11y violations on home”
+    - “keyboard reachable & responsive”
 
