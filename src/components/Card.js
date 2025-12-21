@@ -24,51 +24,86 @@ function makeBoxes(size = 5, texts = []) {
   return boxes;
 }
 
-// Change "day1" -> "day2" to load the different day's prompts
-export default function Card({ onFirstWin, disablePopover = false, day = "day1" }) {
+
+export default function Card({ onFirstWin, disablePopover = false }) {
   const size = 5;
+
+  const [day, setDay] = useState('day1');
   const [boxes, setBoxes] = useState(() => makeBoxes(size));
   const [winner, setWinner] = useState(false);
-  // Popover state
+  const [loadingDay, setLoadingDay] = useState(true);
+
+  // Popover state + first-win tracking
   const [showPopover, setShowPopover] = useState(false);
   const hasShownPopoverRef = useRef(false);
-
-  // Track if we already notified parent about the first win
   const notifiedFirstWinRef = useRef(false);
 
-  // 🔹 NEW: log a click for a given promptId to Redis
+  // Fetch current day from /api/day on mount
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function fetchDay() {
+      try {
+        const res = await fetch('/api/day', { cache: 'no-store' });
+        if (!res.ok)
+          throw new Error(`Failed to fetch day: ${res.status}`);
+              
+        const data = await res.json();
+
+        if (!isCancelled && (data.day === 'day1' || data.day === 'day2')) 
+          setDay(data.day);
+        
+      } catch (err) {
+        console.error('Error fetching current day:', err);
+      } finally {
+        if (!isCancelled) 
+          setLoadingDay(false);
+      }
+    }
+    fetchDay();
+    return () => { isCancelled = true; };
+  }, []);
+
+  //fetch prompts.json whenever day changes
+  useEffect(() => {
+    async function fetchPrompts() {
+      try {
+        const response = await fetch("/prompts.json");
+
+        if (!response.ok)
+          throw new Error(`HTTP error! ${response.status}`);
+        
+        const data = await response.json();
+        const prompts = data[day] || [];
+        setBoxes(makeBoxes(size, prompts));
+      } catch (err) {
+        console.error("Error fetching prompts:", err);
+      }
+    }
+    fetchPrompts();
+  }, [day]);
+
+  // Log a click for a given promptId to Redis
   async function recordPromptClick(promptId) {
+    // Ignore Free Space (center tile r3c3 for both days) --> will not be recorded on redis
+    if (promptId.endsWith(':r3c3')) return;
+
     try {
-      await fetch("/api/click", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      await fetch('/api/click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ promptId }),
       });
     } catch (err) {
-      console.error("Failed to record click:", err);
+      console.error('Failed to record click:', err);
     }
   }
 
-  // Fetch prompts.json
-  useEffect(() => {
-    fetch("/prompts.json")
-      .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
-        return response.json();
-      })
-      .then(data => {
-        const prompts = data[day] || [];
-        setBoxes(makeBoxes(size, prompts));
-      })
-      .catch(err => console.error("Error fetching prompts:", err));
-  }, [day]);
-
   function onToggle(boxId) {
-    // 🔹 Log this tile click for the given day
+    // Log this tile click for the given day
     const promptId = `${day}:${boxId}`;
     recordPromptClick(promptId);
 
-    // Existing toggle logic
     setBoxes(prev =>
       prev.map(b => (b.boxId === boxId ? { ...b, checked: !b.checked } : b))
     );
@@ -97,15 +132,24 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
 
   return (
     <div className="mx-auto max-w-[min(92vw,720px)]">
+      <div className="mt-2 mb-2 px-2 sm:px-4">
+        {/* <h2 className="heading-sub">
+          {loadingDay
+            ? 'Loading day...'
+            : day === 'day1'
+            ? 'Day 1'
+            : 'Day 2'}
+        </h2> */}
+      </div>
+
       {/* Grid */}
       <div className="pl-2 sm:pl-4">
-        {/* p-px adds an even outer border; gap-px + bg-gray-300 draws 1px grid lines */}
-        <div className="grid grid-cols-5 grid-rows-5 gap-px bg-gray-300 p-px rounded">
+        <div className="grid grid-cols-5 grid-rows-5 gap-px bg-gray-400 p-px rounded">
           {boxes.map(b => (
             <div
               key={b.boxId}
               style={{ gridRowStart: b.row, gridColumnStart: b.col }}
-              className="bg-white aspect-square"
+              className="aspect-square"
             >
               <Box
                 boxId={b.boxId}
@@ -118,7 +162,7 @@ export default function Card({ onFirstWin, disablePopover = false, day = "day1" 
         </div>
       </div>
 
-      {/* Popover: appears only on the FIRST win, never again, and never after Win Proof is shown */}
+      {/* Popover: appears only on the FIRST win. Does not disappear after Reset Card button.  */}
       {showPopover && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-lg shadow-xl px-6 py-4 text-center">
