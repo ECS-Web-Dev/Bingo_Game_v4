@@ -1,26 +1,48 @@
 # Bingo Game v.4.0
+**An interactive networking tool for the CSUF ECS Diversity and Inclusion Council.**
 
 
 ## Project Objective
-This project was created by the CSUF ECS Diversity and Inclusion Council WebDev team for use in conventions as an ice-breaker game. The project goal is to create a simple webpage that participants could load onto their phones and interact with during the duration of a weekend-long convention. Each box on the 5x5 grid contains 25 conversation starters or conversation takeaways that encourage players to network with other attendees. If a participant completed a prompt, they can tap on a box to mark it as complete. 5 complete squares in a row prompts the game to alert the participant that they have won the game and where to go to claim their prize. 
+Bingo Game v.4.0 is a mobile-responsive web application designed as an ice-breaker game for the 2026 ECS Diversity and Inclusion Council convention. The 5x5 grid features **conversation starters and networking takeaways** to encourage participants to interact with other attendees. 
 
-The game persists after the participant wins Bingo in order to continue to inspire attendees to network throughout the event. 
+### Key Features
+*   **Interactive Grid:** Tap squares to track networking progress.
+*   **Win Logic:** Automatic detection of 5-in-a-row with prize claim instructions.
+*   **Persistence:** The game state persists after winning, encouraging continued networking throughout the weekend.
+*   **Leaderboard:** Integration with Redis to track top prompts users selected throughout the two-day event in real-time.
+
 
 Tips for new contributors can be found here: [Project Guide](https://github.com/ECS-Web-Dev/Bingo_Game_v4/blob/main/PROJECT_GUIDE.md)
 
 Testing Plan can be found here: [Test Plan](https://github.com/ECS-Web-Dev/Bingo_Game_v4/blob/main/TEST_PLAN.md) 
 
-## Future Work
-These features will be added to v.4.0:
-1. Increase the size of the Win Popover for readability
-2. Adapt the front end design to the convention branding
-3. Move the in-code prompts and Box data model into a database. The db should then seed the Box components with the prompts.
-4. Add a schema to the Box Component and in the db to track the number of times a certain Box was clicked by different participants.
-5. Create a second page that displays the Box prompts in order of frequency (how often different participants click on a certain Box). This second page acts as a Leader Board that shows the popularity of prompts from highest to lowest. 
+## Architecture
 
+```mermaid
+graph TD
+    User((User/Attendee)) -->|1. Interactive Taps| Frontend[Next.js Client]
+    
+    subgraph Vercel_Platform [Vercel Cloud Hosting]
+        Frontend -->|2. Server Actions| Server[Next.js Server-side Logic]
+        Server -->|5. Rendered HTML/Data| Frontend
+    end
+
+    subgraph Database_Layer [Upstash Redis]
+        Server -->|3. Store Progress/Scores| Redis[(Redis DB)]
+        Redis -->|4. Return Leaderboard Data| Server
+    end
+
+    style Server fill:#f9f,stroke:#333,stroke-width:2px
+    style Redis fill:#ff6666,stroke:#333,stroke-width:2px
+
+```
 
 ## Tech Stack
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). I used the library, TailwindCSS, to subsidize component design.
+* Frontend Framework: Next.js (App Router) – Powering the core application logic and server-side rendering.
+* Styling: Tailwind CSS – Utilized for a responsive, mobile-first design suitable for convention use.
+* State & Persistence: Upstash Redis – Tracks real-time prompt engagement.
+* Deployment: Vercel – Provides CI/CD and edge hosting for high availability during events.
+
 
 ## Getting Started
 First, clone the repo. Github provides tips for cloning a repository [here](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
@@ -55,19 +77,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Future Work
+These are suggested features for v.5:
+1. Move the in-code prompts and Box data model into a database. The db should then seed the Box components with the prompts.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
