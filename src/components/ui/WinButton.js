@@ -19,7 +19,7 @@ export default function WinButton({
   return (
     <div className="py-3 relative flex justify-center my-4">
       <button
-        className="px-4 py-2 rounded bg-emerald-600 text-white shadow"
+        className="btn btn-emerald"
         onClick={() => setOpen(true)}
       >
         {buttonText}
@@ -31,7 +31,9 @@ export default function WinButton({
             {proofText}
           </div>
           <div className="mt-3">
-            <button className="px-3 py-1.5 rounded border" onClick={() => setOpen(false)}>
+            <button 
+              className="px-3 py-1.5 rounded border" 
+              onClick={() => setOpen(false)}>
               Close
             </button>
           </div>

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Global theme styles */
 :root {
   --background: linear-gradient(to bottom, #1168b9, #ceba8e); 
   --foreground: #171717;
@@ -8,5 +9,56 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Geist', sans-serif; /* or 'Anton', system-ui, sans-serif; */
+}
+
+/* Reusable styles */
+@layer components {
+  .heading-main {
+    @apply mt-8 py-2 text-center text-4xl font-bold;
+    color: #e9430c;                  /* header orange */
+  }
+
+  .heading-sub {
+    @apply m-0 py-2 text-center text-3xl font-bold;
+    color: #e9430c;                  
+  }
+
+  /* Creates shadow effect */
+  .heading-main,
+  .heading-sub {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
+  }
+
+  .rules-heading {
+    @apply m-0 py-5 text-center font-bold text-2xl underline;
+    color: #070a12;                  /* blue like the flyer footer */
+    font-family: system-ui, sans-serif;
+  }
+
+  .rules-list {
+    @apply mx-auto w-full max-w-xl list-disc pl-6 space-y-5 text-base;
+    color: #1c2d4f;
+    font-family: system-ui, sans-serif;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded shadow font-semibold inline-flex items-center justify-center
+           transition-transform transition-colors duration-150 active:scale-95;
+  }
+
+  .btn-emerald {
+    @apply bg-emerald-600 text-white 
+           hover:bg-emerald-700 
+           focus-visible:outline-none 
+           focus-visible:ring-2 
+           focus-visible:ring-emerald-500 
+           focus-visible:ring-offset-2 
+           focus-visible:ring-offset-transparent;
+  }
+
+  .bingo-paper {
+    background-color: #fdf6e3; /* light warm cream */
+  }
+
 }
