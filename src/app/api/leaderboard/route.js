@@ -53,11 +53,14 @@ export async function GET(request) {
       withScores: true,
     }); 
 
-    // New -- convert redis array to a map 
+    // New -- convert redis array to a map (Upstash returns [member, score, member, score...])
     const scoreMap = {};
-    raw.forEach(({ value, score }) => {
-      scoreMap[value] = score;
-    });
+    for (let i = 0; i < raw.length; i += 2) {
+      const member = raw[i];
+      const score = Number(raw[i + 1] ?? 0);
+      scoreMap[member] = score;
+}
+
 
     // 4) CHANGE: Map over the promptLookup keys (the 24/25 boxes)
     // instead of mapping over the Redis results.
