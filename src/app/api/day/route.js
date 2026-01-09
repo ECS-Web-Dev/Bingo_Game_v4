@@ -2,7 +2,7 @@
 // respects admin override and time-based logic
 
 import { NextResponse } from 'next/server';
-import redis from '@/utils/redis';
+import { redis } from '@/utils/redis';
 import { resolveActiveDay } from '@/utils/day';
 
 export const dynamic = 'force-dynamic';

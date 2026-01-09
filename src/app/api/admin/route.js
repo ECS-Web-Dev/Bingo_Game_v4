@@ -1,6 +1,6 @@
 // src/app/api/admin/route.js
 import { NextResponse } from 'next/server';
-import redis from '@/utils/redis';
+import { redis } from '@/utils/redis';
 import { resolveActiveDay } from '@/utils/day';
 
 // Make sure this route is always dynamic (no static caching)

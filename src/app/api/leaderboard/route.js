@@ -1,6 +1,6 @@
 // src/app/api/leaderboard/route.js
 import { NextResponse } from "next/server";
-import redis from "@/utils/redis";
+import { redis } from '@/utils/redis';
 import fs from "fs";
 import path from "path";
 import { resolveActiveDay } from "@/utils/day";
@@ -49,8 +49,9 @@ export async function GET(request) {
     const promptLookup = buildPromptLookupForDay(promptsData, day);
 
     // 3) Get all entries from Redis first
-    const raw = await redis.zRangeWithScores(LEADERBOARD_KEY, 0, -1);
-    // raw = [ { value: "day1:r3c4", score: 2 }, ... ]
+    const raw = await redis.zrange(LEADERBOARD_KEY, 0, -1, {
+      withScores: true,
+    }); 
 
     // New -- convert redis array to a map 
     const scoreMap = {};

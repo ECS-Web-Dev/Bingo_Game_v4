@@ -1,6 +1,6 @@
 // src/app/api/click/route.js
 import { NextResponse } from "next/server";
-import redis from "@/utils/redis";
+import { redis } from '@/utils/redis';
 
 const LEADERBOARD_KEY = "prompt-clicks";
 
