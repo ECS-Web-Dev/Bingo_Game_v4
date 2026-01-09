@@ -1,6 +1,6 @@
 // src/app/api/click/route.js
 import { NextResponse } from "next/server";
-import redis from "@/utils/redis";
+import { redis } from '@/utils/redis';
 
 const LEADERBOARD_KEY = "prompt-clicks";
 
@@ -17,11 +17,12 @@ export async function POST(request) {
     }
 
     // ZINCRBY prompt-clicks 1 <promptId>
-    const newScore = await redis.zIncrBy(
+    const newScore = await redis.zincrby(
       LEADERBOARD_KEY,
       1,
       String(promptId)
     );
+
 
     return NextResponse.json({
       promptId,

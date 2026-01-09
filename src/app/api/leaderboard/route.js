@@ -1,6 +1,6 @@
 // src/app/api/leaderboard/route.js
 import { NextResponse } from "next/server";
-import redis from "@/utils/redis";
+import { redis } from '@/utils/redis';
 import fs from "fs";
 import path from "path";
 import { resolveActiveDay } from "@/utils/day";
@@ -49,14 +49,18 @@ export async function GET(request) {
     const promptLookup = buildPromptLookupForDay(promptsData, day);
 
     // 3) Get all entries from Redis first
-    const raw = await redis.zRangeWithScores(LEADERBOARD_KEY, 0, -1);
-    // raw = [ { value: "day1:r3c4", score: 2 }, ... ]
+    const raw = await redis.zrange(LEADERBOARD_KEY, 0, -1, {
+      withScores: true,
+    }); 
 
-    // New -- convert redis array to a map 
+    // New -- convert redis array to a map (Upstash returns [member, score, member, score...])
     const scoreMap = {};
-    raw.forEach(({ value, score }) => {
-      scoreMap[value] = score;
-    });
+    for (let i = 0; i < raw.length; i += 2) {
+      const member = raw[i];
+      const score = Number(raw[i + 1] ?? 0);
+      scoreMap[member] = score;
+}
+
 
     // 4) CHANGE: Map over the promptLookup keys (the 24/25 boxes)
     // instead of mapping over the Redis results.
