@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Rules from '@/components/Rules';
-import WinButton from "@/components/ui/WinButton";
+import ResetCardButton from '@/components/ui/ResetCardButton';
 import LeaderboardButton from '@/components/ui/LeaderboardButton';
 
 import { Geist } from 'next/font/google';
@@ -13,6 +13,8 @@ const geist = Geist({ subsets: ['latin'] });
 function HomePage() {
   const [hasEverWon, setHasEverWon] = useState(false);
   const [showWinProof, setShowWinProof] = useState(false); // controls WinButton popover
+  
+  const resetCardRef = useRef(null);
 
   return (
     <main className={geist.className}>
@@ -20,18 +22,16 @@ function HomePage() {
       <Card
         onFirstWin={() => setHasEverWon(true)}
         disablePopover={showWinProof}
+        onResetReady={(resetFn) => {
+          resetCardRef.current = resetFn;
+        }}
       />
 
       <LeaderboardButton />
 
-      {hasEverWon && (
-        <WinButton
-          open={showWinProof}
-          onOpenChange={setShowWinProof}
-          buttonText="Winner!"
-          proofText={"I've won Bingo!"}
-        />
-      )}
+      <ResetCardButton 
+        onConfirm={() => resetCardRef.current?.()}
+      />
 
       <Rules />
     </main>
