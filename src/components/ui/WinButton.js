@@ -4,6 +4,7 @@ import { useState } from "react";
 export default function WinButton({
   buttonText = "Winner!",
   proofText = "I've won Bingo!",
+  names = [],
   open,                 // optional controlled prop
   onOpenChange,         // optional controlled handler
 }) {
@@ -30,10 +31,22 @@ export default function WinButton({
           <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
             {proofText}
           </div>
+
+          {names.length > 0 && (
+            <ul className="mt-3 text-sm text-left space-y-1">
+              {names.map((name, i) => (
+                <li key={i} className="pl-2">
+                  • {name}
+                </li>
+              ))}
+            </ul>
+          )}
+
           <div className="mt-3">
             <button 
               className="px-3 py-1.5 rounded border" 
-              onClick={() => setOpen(false)}>
+              onClick={() => setOpen(false)}
+            >
               Close
             </button>
           </div>

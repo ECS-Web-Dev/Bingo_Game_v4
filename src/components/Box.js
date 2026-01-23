@@ -4,10 +4,8 @@ import { useState, useRef } from 'react';
 import { Check } from 'lucide-react';
 
 export default function Box({ 
-  boxId, 
-  text, 
-  checked, 
-  onToggle 
+  box,              // ← whole box object instead of individual fields
+  onOpenEditor      // ← replaces onToggle
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const timeoutRef = useRef(null);
@@ -30,7 +28,8 @@ export default function Box({
     <div className="relative w-full h-full">
       {/* Tooltip: full text on long press */}
       {showTooltip && (
-        <div className="absolute z-50 px-3 py-2
+        <div className="
+            absolute z-50 px-3 py-2
             bg-black text-white text-sm rounded
             max-w-xs
             left-1/2 -translate-x-1/2
@@ -38,7 +37,7 @@ export default function Box({
             shadow-lg
             break-words"
         >
-          {text}
+          {box.text}
       </div>
       )}
 
@@ -46,15 +45,18 @@ export default function Box({
       onPointerDown={handlePressStart}
       onPointerUp={handlePressEnd}
       onPointerLeave={handlePressEnd}
-      onClick={() => onToggle(boxId)}
+      onClick={() => onOpenEditor(box.boxId)}
       className={`
         relative w-full h-full 
         p-2 sm:p-3 md:p-4 
         select-none transition-colors
-        ${checked ? "bg-amber-200 text-black" : "bg-yellow-50 text-gray-900"}
+        ${
+          box.checked 
+            ? "bg-amber-200 text-black" 
+            : "bg-yellow-50 text-gray-900"}
       `}
     >
-      {checked && (
+      {box.checked && (
         <Check 
           className="absolute top-1 right-1 w-4 h-4 sm:w-5 sm:h-5 opacity-90"
         />
@@ -77,7 +79,7 @@ export default function Box({
             ${collapsedClampClasses}
           `}
         >
-          {text}
+          {box.text}
         </span>
       </div>
     </button>
