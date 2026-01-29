@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Rules from '@/components/Rules';
+import Names from '@/components/Names';
 import ResetCardButton from '@/components/ui/ResetCardButton';
 import LeaderboardButton from '@/components/ui/LeaderboardButton';
 
@@ -34,6 +35,8 @@ function HomePage() {
       />
 
       <Rules />
+
+      <Names />
     </main>
   )
 }
