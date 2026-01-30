@@ -38,8 +38,12 @@ body {
 
   .rules-list {
     @apply mx-auto w-full max-w-xl list-disc pl-6 space-y-5 text-base;
-    color: #1c2d4f;
+    color: #171717;
     font-family: system-ui, sans-serif;
+  }
+  
+  .rules-steps {
+    @apply list-decimal pl-8 mt-2 space-y-2;
   }
   
   .btn {
