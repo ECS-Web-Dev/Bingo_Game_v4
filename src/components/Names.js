@@ -6,19 +6,19 @@ export default function Names() {
     name: "Brajan Memishi",
     role: "Web Development Lead",
     github: "https://github.com/brajanmemishi",
-    linkedin: "https://www.linkedin.com/in/USERNAME",
+    linkedin: "https://www.linkedin.com/in/brajan-memishi/",
   },
   {
     name: "Elizabeth Ovieda",
     role: "Project Manager",
-    github: "hhttps://github.com/eliO160",
+    github: "https://github.com/eliO160",
     linkedin: "https://www.linkedin.com/in/elizabethovieda/",
   },
   {
-    name: "Ellie Fong",
+    name: "Elle Fong",
     role: "Developer",
     github: "https://github.com/ellefong",
-    linkedin: "https://www.linkedin.com/in/USERNAME",
+    linkedin: "https://www.linkedin.com/in/elle-fong-15079a323/",
   },
   {
     name: "Davielle Gilzean",
