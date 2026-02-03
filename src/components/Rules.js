@@ -18,8 +18,8 @@ function Rules() {
           When you complete a prompt:
           <ol className="rules-steps">
             <li>Tap the bingo square.</li>
-            <li>Enter the name of the person you met who helped you fulfill the criteria</li>
-            <li>Select the <b>Submit</b> button</li>
+            <li>Enter the name of the person you met who helped you fulfill the criteria. <b>If no name is needed, enter <span>&quot;N/A.&quot;</span></b></li>
+            <li>Select the <b>Submit</b> button.</li>
             <li>The square will be marked as complete.</li>
           </ol>
         </li>
