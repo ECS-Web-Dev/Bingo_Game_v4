@@ -20,8 +20,8 @@ export default function Box({
   }
 
   // CSS classes for clamping text inside the box to 5 lines
-  const collapsedClampClasses =
-    "overflow-hidden [display:-webkit-box] [-webkit-line-clamp:4] [-webkit-box-orient:vertical] [text-overflow:ellipsis]";
+  // const collapsedClampClasses =
+  //   "overflow-hidden [display:-webkit-box] [-webkit-line-clamp:4] [-webkit-box-orient:vertical] [text-overflow:ellipsis]";
 
 
   return (
@@ -70,13 +70,12 @@ export default function Box({
             px-0.5
             text-left
             whitespace-normal
-            break-normal
+            break-words
             hyphens-auto
-            [word-break:normal]
-            [overflow-wrap:normal]
+            [overflow-wrap:anywhere]
             leading-tight
-            text-[clamp(0.68rem,2.2vw,0.95rem)]
-            ${collapsedClampClasses}
+            text-[0.9rem]
+            
           `}
         >
           {box.text}

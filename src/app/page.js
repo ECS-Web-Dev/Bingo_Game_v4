@@ -2,10 +2,10 @@
 import { useState, useRef } from 'react';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
-import Rules from '@/components/Rules';
-import Names from '@/components/Names';
-import ResetCardButton from '@/components/ui/ResetCardButton';
-import LeaderboardButton from '@/components/ui/LeaderboardButton';
+// import Rules from '@/components/Rules';
+// import Names from '@/components/Names';
+// import ResetCardButton from '@/components/ui/ResetCardButton';
+// import LeaderboardButton from '@/components/ui/LeaderboardButton';
 
 import { Geist } from 'next/font/google';
 
@@ -27,7 +27,7 @@ function HomePage() {
           resetCardRef.current = resetFn;
         }}
       />
-
+{/* 
       <LeaderboardButton />
 
       <ResetCardButton 
@@ -36,7 +36,7 @@ function HomePage() {
 
       <Rules />
 
-      <Names />
+      <Names /> */}
     </main>
   )
 }

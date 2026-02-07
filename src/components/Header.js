@@ -7,7 +7,7 @@ function Header() {
         ECS DIVERSITY & LEADERSHIP SUMMIT 2026
       </h1>
       <h2 className ="heading-sub">
-        BINGO
+        BINGO: DAY 2
       </h2>
     </main>
   );

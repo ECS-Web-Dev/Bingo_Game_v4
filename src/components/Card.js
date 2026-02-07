@@ -304,7 +304,7 @@ export default function Card({
   if (!hasHydrated) return null;
 
   return (
-    <div className="mx-auto max-w-[min(92vw,720px)]">
+    <div className="mx-auto max-w-[min(92vw,720px)] pb-24">
       {/* Grid */}
       <div className="pl-2 sm:pl-4">
         <div className="grid grid-cols-5 grid-rows-5 gap-px bg-gray-400 p-px rounded">
